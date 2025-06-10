@@ -1,8 +1,8 @@
 # routes/bug_api.py
 from flask import Blueprint, jsonify, request, abort
 from flask_login import login_required, current_user
+from services.bug_manager import BugManager
 from models.bug import Bug
-from models import db
 
 bug_api_bp = Blueprint('bug_api', __name__, url_prefix='/api')
 
@@ -44,9 +44,7 @@ def create_bug():
     if not current_user.is_admin:
         abort(403)
     data = request.get_json()
-    bug = Bug(**data)
-    db.session.add(bug)
-    db.session.commit()
+    bug = BugManager.create_bug(data)
     return jsonify({"message": "Bug created", "id": bug.id}), 201
 
 @bug_api_bp.route('/bugs/<int:bug_id>', methods=['PUT'])
@@ -56,9 +54,7 @@ def update_bug(bug_id):
     if not current_user.is_admin and bug.assigned_to != current_user.id:
         abort(403)
     data = request.get_json()
-    bug.progress = data.get('progress', bug.progress)
-    bug.comments = data.get('comments', bug.comments)
-    db.session.commit()
+    BugManager.update_bug(bug_id, data)
     return jsonify({"message": "Bug updated"})
 
 @bug_api_bp.route('/bugs/<int:bug_id>', methods=['DELETE'])
@@ -66,18 +62,14 @@ def update_bug(bug_id):
 def delete_bug(bug_id):
     if not current_user.is_admin:
         abort(403)
-    bug = Bug.query.get_or_404(bug_id)
-    db.session.delete(bug)
-    db.session.commit()
+    BugManager.delete_bug(bug_id)
     return jsonify({"message": "Bug deleted"})
 
 @bug_api_bp.route('/assign/<int:bug_id>', methods=['POST'])
 @login_required
-def assign_bug(bug_id):
+def assign_bug_api(bug_id):
     if not current_user.is_admin:
         abort(403)
-    bug = Bug.query.get_or_404(bug_id)
     user_id = request.json.get("user_id")
-    bug.assigned_to = user_id
-    db.session.commit()
+    BugManager.assign_bug(bug_id, user_id)
     return jsonify({"message": "Bug assigned"})

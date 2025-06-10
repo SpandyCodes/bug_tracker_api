@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Bug Dashboard</h2>
+
+<label>Filter by severity:</label>
+<select id="severityFilter">
+  <option value="">All</option>
+  <option>Low</option>
+  <option>Medium</option>
+  <option>High</option>
+</select>
+
+<ul id="bugList">
+  {% for bug in bugs %}
+    <li class="bug-item" data-severity="{{ bug.severity }}">
+      <strong>{{ bug.title }}</strong> ({{ bug.severity }})
+      - Assigned to: {{ bug.assignee.username if bug.assignee else 'Unassigned' }}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

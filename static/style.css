@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 1rem;
+  background: #f6f6f6;
+}
+header {
+  margin-bottom: 1rem;
+}
+form {
+  margin-bottom: 1rem;
+}
+ul#bugList li {
+  background: #fff;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-left: 4px solid #ccc;
+}
+[data-severity="High"] { border-color: red; }
+[data-severity="Medium"] { border-color: orange; }
+[data-severity="Low"] { border-color: green; }
+.flash-messages {
+  list-style: none;
+  padding: 0.5rem;
+  background: #e0ffe0;
+  border: 1px solid #b2ffb2;
+  margin-bottom: 1rem;
+}
